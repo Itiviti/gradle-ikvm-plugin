@@ -1,0 +1,31 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+group = 'com.ullink'
+version = '1.0'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+dependencies {
+    compile gradleApi()
+    compile fileTree( dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
+    compile getTools()
+    groovy localGroovy()
+    testCompile 'junit:junit:4.8.2'
+}
+
+def getTools(){
+    def jHome = System.getProperty('java.home')
+    def path = new File(jHome, 'lib/tools.jar')
+    if (path.exists()) {
+        return files(path)
+    }
+    path = new File(jHome, '../lib/tools.jar')
+    if (path.exists()) {
+        return files(path)
+    }
+    assert false, "Failed to find tools.jar"
+} 

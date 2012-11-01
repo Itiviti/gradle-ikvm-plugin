@@ -17,7 +17,7 @@ class Ikvm extends ConventionTask {
     def srcPath
     boolean removeAssertions = true
     boolean compressResources = true
-    boolean generateDoc = true
+    boolean generateDoc = false
     boolean delaySign = false
     String classloader
     String target

@@ -31,7 +31,7 @@ Sample usage:
       
       // Below values have sensible defaults but can be overriden
       
-      // Where will the assebly be generated
+      // Where will the assembly be generated
       destinationDir = jar.destinationDir
       
       // Assembly name

@@ -19,6 +19,12 @@ Sample usage:
       mavenCentral()
     }
     
+    // ikvmCompile configuration is added, and can be filled with dependencies (provided the dlls are available in some repository of yours)
+    dependencies {
+        ikvmCompile group: 'foo', name: 'bar', version: '1.0', type: '.dll'
+    }
+    
+    
     ikvm {
       // using IKVM_HOME otherwise
       home = '../ikvm-0.46.0.1'

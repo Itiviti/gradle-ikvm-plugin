@@ -75,4 +75,4 @@ Sample usage: either invoke `gradle ikvmDoc` or customize it:
 
 # License
 
-This plugin is licensed under an open-source license, which I was too lazy to fill in yet.
+All these plugins are licensed under the [Creative Commons — CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.

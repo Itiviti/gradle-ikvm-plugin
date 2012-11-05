@@ -36,15 +36,16 @@ import com.sun.tools.javadoc.Main;
 /**
  * Java Doclet for generating .NET XML API documentation.
  * <p>
- * The current implementation may has not been tested
- * with (and thus may not support) the following features:
- * {@code}; should be converted to <c> tags
- * {@docRoot}
- * {@inheritDoc}
- * {@literal}
- * {@value}
+ * The current implementation may has not been tested with (and thus may not support) the following features:
+ * <ul>
+ * <li>$&#123;@code} should be converted to &lt;c&gt; tags</li>
+ * <li>$&#123;@docRoot}
+ * $&#123;@inheritDoc}
+ * $&#123;@literal}
+ * $&#123;@value}
  * references to package documentation
- * annotations
+ * annotations</li>
+ * </ul>
  * <p>
  * Other issues:
  * <p>

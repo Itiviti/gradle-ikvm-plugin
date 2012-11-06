@@ -7,7 +7,8 @@ import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 
 class Ikvm extends ConventionTask {
-    def home
+    def ikvmHome
+    def ikvmVersion
     def destinationDir
     String assemblyName
     boolean debug = true
@@ -28,14 +29,13 @@ class Ikvm extends ConventionTask {
         conventionMapping.map "destinationDir", { project.jar.destinationDir }
         conventionMapping.map "assemblyName", { project.name }
         conventionMapping.map "version", { project.version }
-        conventionMapping.map "home", { System.getenv()['IKVM_HOME'] }
         dependsOn(project.tasks.jar)
     }
     
     @InputFile
     def getIkvmc(){
-        assert home, "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
-        def ikvmExec = new File(project.file(home), 'bin/ikvmc.exe')
+        assert getIkvmHome(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
+        def ikvmExec = new File(project.file(getIkvmHome()), 'bin/ikvmc.exe')
         assert ikvmExec.exists(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
         ikvmExec
     } 

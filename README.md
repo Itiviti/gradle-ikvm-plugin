@@ -18,7 +18,7 @@ Simplest usage:
         }
     
         dependencies {
-            classpath "com.ullink.gradle:gradle-ikvm-plugin:1.2"
+            classpath "com.ullink.gradle:gradle-ikvm-plugin:1.3"
         }
     }
     

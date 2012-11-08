@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group = 'com.ullink.gradle'
-version = '1.2'
+version = '1.3'
 
 def customizePom(pom) {
     pom.project {
@@ -67,6 +67,7 @@ dependencies {
     compile gradleApi()
     compile fileTree( dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
     compile getTools()
+    compile 'com.ullink.gradle:gradle-repositories-plugin:1.1'
     groovy localGroovy()
     testCompile 'junit:junit:4.8.2'
 }

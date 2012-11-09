@@ -1,4 +1,4 @@
-# Gradle IKVM Plugin
+# Gradle IKVM Plugin [![Build Status](https://buildhive.cloudbees.com/job/gluck/job/gradle-ikvm-plugin/badge/icon)](https://buildhive.cloudbees.com/job/gluck/job/gradle-ikvm-plugin/)
 
 This plugin allows to compile the project jar into a .Net assembly using [IKVM](http://www.ikvm.net/).
 It supports various IKVM flags, and also allows for .Net API documentation generation.
@@ -84,4 +84,4 @@ Sample usage: either invoke `gradle ikvmDoc` or customize it:
 
 # License
 
-All these plugins are licensed under the [Creative Commons — CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.
+All these plugins are licensed under the [Creative Commons ï¿½ CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.

@@ -25,11 +25,20 @@ class Ikvm extends ConventionTask {
     String main
     
     Ikvm() {
-        description = 'Generates a .Net assembly from the project jar'
         conventionMapping.map "destinationDir", { project.jar.destinationDir }
         conventionMapping.map "assemblyName", { project.name }
         conventionMapping.map "version", { project.version }
         dependsOn(project.tasks.jar)
+        outputs.files {
+            if (generateDoc) {
+                return project.tasks.ikvmDoc.getDestinationFile()
+            }
+        }
+        outputs.files {
+            if (debug) {
+                return new File(getDestDir(), getAssemblyName() + ".pdb")
+            }
+        }
     }
     
     @InputFile
@@ -94,7 +103,6 @@ class Ikvm extends ConventionTask {
             commandLineArgs += "-keyfile:${keyFile}"
         }
         if (debug) {
-            getInputs().file(new File(getDestDir(), getAssemblyName() + ".pdb"))
             commandLineArgs += "-debug"
         }
         if (removeAssertions) {

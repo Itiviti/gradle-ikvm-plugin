@@ -1,5 +1,6 @@
 package com.ullink
 
+import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.javadoc.Javadoc
@@ -7,26 +8,41 @@ import org.gradle.api.tasks.javadoc.Javadoc
 class IkvmDoc extends Javadoc {
     def assemblyFile
     IkvmDoc() {
-        description = 'Generates an xml documentation file for IKVM generated assembly (from javadoc)'
         conventionMapping.map "classpath", { project.configurations.compile }
         conventionMapping.map "source", { project.sourceSets.main.allJava }
-        conventionMapping.map "destinationDir", { project.tasks.ikvm.getDestDir() }
         conventionMapping.map "assemblyFile", { project.tasks.ikvm.getDestFile() }
         options.doclet = IKVMDocLet.class.getName()
         options.docletpath = project.buildscript.configurations.classpath.files.asType(List)
         dependsOn(project.tasks.ikvm)
     }
     
+    protected void setOutput(AbstractTask task) {
+        task.getOutputs().file {
+            getDestinationFile()
+        }
+    }
+    
+    File getDestinationFile() {
+        File assembly = getAbsoluteAssemblyFile()
+        String assemblyName = assembly.name.substring(assembly.name.lastIndexOf('.'))
+        new File(assembly.getParent(), assemblyName + ".xml");
+    }
+    
+    // remove @Output annotation
+    @Override
+    public File getDestinationDir() {
+    }
+    
     @Override
     @TaskAction
     protected void generate()
     {
-        options.addStringOption("assembly", getDestFile().toString())
+        options.addStringOption("assembly", getAbsoluteAssemblyFile().toString())
         super.generate();
     }
     
     @InputFile
-    File getDestFile() {
+    File getAbsoluteAssemblyFile() {
         project.file(getAssemblyFile())
     }
 }

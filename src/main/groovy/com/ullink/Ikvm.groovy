@@ -88,6 +88,9 @@ class Ikvm extends ConventionTask {
         {
             switch (target)
             {
+                case "library":
+                    extension = ".dll"
+                    break;
                 case "module":
                     extension = ".netmodule"
                     break;

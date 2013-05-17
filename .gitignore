@@ -1,4 +1,7 @@
 /.gradle
+/.groovy
 /.settings
 /build
 /bin
+/.idea
+/out

@@ -9,13 +9,6 @@ import org.gradle.api.plugins.JavaBasePlugin;
 
 class IkvmPlugin implements Plugin<Project> {
     void apply(Project project) {
-        project.configurations  {
-            ikvmCompile {
-                description = 'IKVM compile classpath'
-                transitive = true
-            }
-        }
-        
         project.tasks.withType(Ikvm).whenTaskAdded { Ikvm task ->
             task.conventionMapping.map "ikvmVersion", { '7.2.4630.4' }
             task.conventionMapping.map "ikvmHome", {

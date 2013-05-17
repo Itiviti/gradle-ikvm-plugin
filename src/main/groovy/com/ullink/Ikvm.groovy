@@ -1,5 +1,9 @@
 package com.ullink
 
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang.StringUtils;
+
+import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.ConventionTask
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
@@ -39,6 +43,17 @@ class Ikvm extends ConventionTask {
                 return new File(getDestDir(), getAssemblyName() + ".pdb")
             }
         }
+        
+        Configuration compileConfiguration = (Configuration)project.configurations.findByName(getCompileConfigurationName());
+        if (compileConfiguration == null) {
+            compileConfiguration = project.configurations.add(getCompileConfigurationName());
+        }
+        compileConfiguration.transitive = true
+        compileConfiguration.description = this.name + ' compile classpath'
+    }
+    
+    String getCompileConfigurationName() {
+        return StringUtils.uncapitalize(String.format("%sCompile", this.name ));
     }
     
     @InputFile
@@ -51,14 +66,15 @@ class Ikvm extends ConventionTask {
     
     @InputFiles
     def getReferences() {
-        project.configurations.ikvmCompile.collect()
+        project.configurations.findByName(getCompileConfigurationName()).collect()
     } 
     
-    @InputFile
+    @InputFiles
     def getKeyFileObj() {
         if (getKeyFile()) {
             return project.file(getKeyFile())
         }
+        return new File[0]
     } 
     
     def getDestDir() {
@@ -134,8 +150,20 @@ class Ikvm extends ConventionTask {
 
         commandLineArgs += project.jar.archivePath
         commandLineArgs += getReferences().collect{"-reference:${it}"}
+        
+        File debugFile = new File(getDestDir(), getAssemblyName() + ".pdb")
+        if (debug && debugFile.isFile()) {
+            debugFile.delete();
+        }
         project.exec {
             commandLine = commandLineArgs
+        }
+        if (debug && !debugFile.isFile()) {
+            // bug in IKVM 0.40
+            File shitFile = new File(getAssemblyName() + ".pdb")
+            if (shitFile.isFile()) {
+                FileUtils.moveFile(shitFile, debugFile)
+            }
         }
         if (generateDoc && !project.gradle.taskGraph.hasTask(project.tasks.ikvmDoc)) {
             project.tasks.ikvmDoc.generate()

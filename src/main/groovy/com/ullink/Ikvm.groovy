@@ -27,6 +27,7 @@ class Ikvm extends ConventionTask {
     String classloader
     String target
     String main
+    String platform
     
     Ikvm() {
         conventionMapping.map "destinationDir", { project.jar.destinationDir }
@@ -88,6 +89,9 @@ class Ikvm extends ConventionTask {
         {
             switch (target)
             {
+                case "library":
+                    extension = ".dll"
+                    break;
                 case "module":
                     extension = ".netmodule"
                     break;
@@ -140,6 +144,9 @@ class Ikvm extends ConventionTask {
         }
         if (target) {
             commandLineArgs += "-target:${target}"
+        }
+        if (platform) {
+            commandLineArgs += "-platform:${platform}"
         }
         if (main) {
             commandLineArgs += "-target:${main}"

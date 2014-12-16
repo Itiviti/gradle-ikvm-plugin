@@ -47,7 +47,7 @@ class Ikvm extends ConventionTask {
         
         Configuration compileConfiguration = (Configuration)project.configurations.findByName(getCompileConfigurationName());
         if (compileConfiguration == null) {
-            compileConfiguration = project.configurations.add(getCompileConfigurationName());
+            compileConfiguration = project.configurations.maybeCreate(getCompileConfigurationName());
         }
         compileConfiguration.transitive = true
         compileConfiguration.description = this.name + ' compile classpath'

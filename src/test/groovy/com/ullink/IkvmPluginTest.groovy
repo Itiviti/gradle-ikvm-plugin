@@ -13,8 +13,8 @@ class IkvmPluginTest {
         assertTrue(project.tasks.ikvm instanceof Ikvm)
         assertTrue(project.tasks.ikvmDoc instanceof IkvmDoc)
         project.ikvm {
-            home = 'abc'
+            ikvmHome = 'abc'
         }
-        assertEquals('abc', project.tasks.ikvm.home)
+        assertEquals('abc', project.tasks.ikvm.ikvmHome)
     }
 }

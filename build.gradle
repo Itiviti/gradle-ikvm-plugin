@@ -12,6 +12,6 @@ dependencies {
     compile fileTree( dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
     compile getTools()
     compile 'com.ullink.gradle:gradle-repositories-plugin:2.1'
-    compile 'org.apache.directory.studio:org.apache.commons.lang:2.6'
+    compile 'org.apache.commons:commons-lang3:3.3.2'
     testCompile 'junit:junit:4.8.2'
 }

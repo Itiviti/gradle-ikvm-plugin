@@ -20,20 +20,20 @@ class IkvmPlugin implements Plugin<Project> {
                 downloadIkvm(project, version)
             }
         }
-        
+
         project.apply plugin: 'repositories'
         project.apply plugin: 'java'
-        
+
 		Task ikvm = project.task('ikvm', type: Ikvm)
 		ikvm.group = BasePlugin.BUILD_GROUP
 		ikvm.description = 'Compiles the project jar into a .Net assembly.'
-		
+
         Task ikvmDoc = project.task('ikvmDoc', type: IkvmDoc)
 		ikvmDoc.group = JavaBasePlugin.DOCUMENTATION_GROUP
 		ikvmDoc.description = 'Generates .Net API documentation (XML) for the main source code.'
 
     }
-    
+
     File downloadIkvm(Project project, String version) {
         def dest = new File(project.gradle.gradleUserHomeDir, 'ikvm')
         if (!dest.exists()) {
@@ -56,14 +56,15 @@ class IkvmPlugin implements Plugin<Project> {
         }
         ret
     }
-    
+
     void setupIkvmRepositories(Project project) {
         if (!project.repositories.findByName('sourceforge-ikvm')) {
             project.repositories.sourceforge('ikvm', '[module]/[revision]/[artifact]-[revision].[ext]') {
                 // this one is where Jeroen deploys beta/rc
-                addArtifactPattern('http://www.frijters.net/[artifact]-[revision].[ext]')
+                ivy {
+                  artifactPattern('http://www.frijters.net/[artifact]-[revision].[ext]')
+                }
             }
         }
     }
 }
-

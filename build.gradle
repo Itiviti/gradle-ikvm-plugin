@@ -9,7 +9,7 @@ apply from: "${ext.ullinkGradleScripts}/task-rules.gradle"
 apply from: "${ext.ullinkGradleScripts}/functions.gradle"
 
 group = 'com.ullink.gradle'
-version = '2.2'
+version = '2.3'
 description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation'
 
 sourceCompatibility = 1.6

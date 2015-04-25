@@ -1,9 +1,11 @@
 # Gradle IKVM Plugin 
 
+[![Build Status](https://travis-ci.org/Vad1mo/gradle-ikvm-plugin.svg)](https://travis-ci.org/Vad1mo/gradle-ikvm-plugin)
+
 This plugin allows to compile the project jar into a .Net assembly using [IKVM](http://www.ikvm.net/).
 It supports various IKVM flags, and also allows for .Net API documentation generation.
 
-## Main Feature 
+## Main Features
 - Wrapper around IKVM
 - Supports all IKVM flags
 - Easy way to include 3rd party DLLs into the build process

@@ -3,6 +3,14 @@
 This plugin allows to compile the project jar into a .Net assembly using [IKVM](http://www.ikvm.net/).
 It supports various IKVM flags, and also allows for .Net API documentation generation.
 
+## Main Features
+- Wrapper around IKVM
+- Supports all IKVM flags
+- Easy way to include 3rd party DLLs into the build process
+- Is able to IKVM on the fly which is quite handy when it used on a CI
+- Works on Unix & Mac by using [Mono](http://www.mono-project.com/)
+
+
 Below tasks are provided by the plugin:
 
 ## ikvm
@@ -12,13 +20,15 @@ It can be configured by a usual gradle convention.
 
 Simplest usage:
 
+Build script snippet can be used in all Gradle versions:
+
     buildscript {
         repositories {
             mavenCentral()
         }
     
         dependencies {
-            classpath "com.ullink.gradle:gradle-ikvm-plugin:1.3"
+            classpath "com.ullink.gradle:gradle-ikvm-plugin:2.3"
         }
     }
     
@@ -29,9 +39,15 @@ Simplest usage:
         mavenCentral()
     }
 
+Build script snippet can be used instead with Gradle 2.1+
+
+    plugins {
+      id "com.ullink.ikvm" version "2.3"
+    }
+
 More options:
 
-    // ikvmCompile configuration is added, and can be filled with dependencies (provided the dlls are available in some repository of yours)
+    // ikvmCompile allows to provide 3rd Party DLLs to the process (provided the dlls are available in some repository of yours)
     dependencies {
         ikvmCompile group: 'foo', name: 'bar', version: '1.0', type: '.dll'
     }
@@ -41,11 +57,11 @@ More options:
         // ... otherwise it will download (& cache) Ikvm release zip from official download links (sourceforge & www.frijters.net) ...
         ikvmVersion = '7.2.4630.4'
         
-        // ... but you can also specify the Ikvm folder yourself
+        // ... but you can also specify the Ikvm folder yourself then this will be used.
         ikvmHome = '../ikvm-0.46.0.1'
         
         
-        // Below values have sensible defaults but can be overriden
+        // Below values have sensible __defaults__ but can be overriden
         
         // Where will the assembly be generated
         destinationDir = jar.destinationDir
@@ -68,6 +84,10 @@ More options:
         // Other ikvmc options can be set:
         // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath ...
     }
+
+## Usage
+
+When everything is setup correctly just run `gradle ikvm`.
 
 
 ## ikvmDoc

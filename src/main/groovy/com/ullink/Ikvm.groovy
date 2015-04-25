@@ -9,6 +9,7 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.os.OperatingSystem
 
 class Ikvm extends ConventionTask {
     def ikvmHome
@@ -54,16 +55,25 @@ class Ikvm extends ConventionTask {
     }
     
     String getCompileConfigurationName() {
-        return StringUtils.uncapitalize(String.format("%sCompile", this.name ));
+        return String.format("%sCompile", this.name.toLowerCase());
     }
     
     @InputFile
     def getIkvmc(){
         assert getIkvmHome(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
-        def ikvmExec = new File(project.file(getIkvmHome()), 'bin/ikvmc.exe')
+        File ikvmExec = new File(project.file(getIkvmHome()), 'bin/ikvmc.exe')
         assert ikvmExec.exists(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
-        ikvmExec
-    } 
+        return ikvmExec
+    }
+
+    def ikvmcOptionalOnMono(){
+        if (!OperatingSystem.current().windows){
+            project.logger.info "Using Mono for IKVM"
+            return ["mono",getIkvmc()]
+        }
+        return [getIkvmc()]
+    }
+
     
     @InputFiles
     def getReferences() {
@@ -107,7 +117,7 @@ class Ikvm extends ConventionTask {
     
     @TaskAction
     def build() {
-        def commandLineArgs = [ getIkvmc() ]
+        def commandLineArgs = ikvmcOptionalOnMono()
 
         def destFile = getDestFile()
         commandLineArgs += "-out:${destFile}"

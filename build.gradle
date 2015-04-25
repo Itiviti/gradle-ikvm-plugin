@@ -18,7 +18,7 @@ dependencies {
     compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
     compile getTools()
     compile 'com.ullink.gradle:gradle-repositories-plugin:2.1'
-    compile 'org.apache.commons:commons-lang3:3.3.2'
+    compile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'junit:junit:4.8.2'
 }
 
@@ -44,4 +44,12 @@ plugindev {
     projectUrl "https://github.com/Ullink/${project.name}"
     projectInceptionYear '2012'
     done()
+}
+
+if (JavaVersion.current().isJava8Compatible()) {
+    allprojects {
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
 }

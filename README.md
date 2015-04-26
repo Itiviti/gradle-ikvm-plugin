@@ -1,5 +1,7 @@
 # Gradle IKVM Plugin [![Build status](https://ci.appveyor.com/api/projects/status/31ut9l170kfbjyq3?svg=true)](https://ci.appveyor.com/project/gluck/gradle-ikvm-plugin)
 
+[![Join the chat at https://gitter.im/Ullink/gradle-ikvm-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Ullink/gradle-ikvm-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 This plugin allows to compile the project jar into a .Net assembly using [IKVM](http://www.ikvm.net/).
 It supports various IKVM flags, and also allows for .Net API documentation generation.
 

@@ -4,11 +4,11 @@ This plugin allows to compile the project jar into a .Net assembly using [IKVM](
 It supports various IKVM flags, and also allows for .Net API documentation generation.
 
 ## Main Features
-- Wrapper around IKVM
-- Supports all IKVM flags
-- Easy way to include 3rd party DLLs into the build process
-- Is able to IKVM on the fly which is quite handy when it used on a CI
-- Works on Unix & Mac by using [Mono](http://www.mono-project.com/)
+- Command line wrapper around IKVM.
+- Supports all IKVM flags.
+- Easy way to include 3rd party DLLs into the build process.
+- No need to install IKVM locally as it can be downloaded during the build process. Handy for CI Enviroments.
+- Works also on Unix & Mac by using [Mono](http://www.mono-project.com/). 
 
 
 Below tasks are provided by the plugin:
@@ -104,4 +104,4 @@ Sample usage: either invoke `gradle ikvmDoc` or customize it:
 
 # License
 
-All these plugins are licensed under the [Creative Commons � CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.
+All these plugins are licensed under the [Creative Commons :copyright: CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.

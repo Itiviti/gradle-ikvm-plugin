@@ -1,6 +1,4 @@
-# Gradle IKVM Plugin 
-
-[![Build Status](https://travis-ci.org/Vad1mo/gradle-ikvm-plugin.svg)](https://travis-ci.org/Vad1mo/gradle-ikvm-plugin)
+# Gradle IKVM Plugin [![Build status](https://ci.appveyor.com/api/projects/status/31ut9l170kfbjyq3?svg=true)](https://ci.appveyor.com/project/gluck/gradle-ikvm-plugin) [![Join the chat at https://gitter.im/Ullink/gradle-ikvm-plugin](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Ullink/gradle-ikvm-plugin?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 This plugin allows to compile the project jar into a .Net assembly using [IKVM](http://www.ikvm.net/).
 It supports various IKVM flags, and also allows for .Net API documentation generation.
@@ -28,12 +26,12 @@ Build script snippet can be used in all Gradle versions:
         repositories {
             mavenCentral()
         }
-    
+
         dependencies {
             classpath "com.ullink.gradle:gradle-ikvm-plugin:2.3"
         }
     }
-    
+
     apply plugin:'java'
     apply plugin:'ikvm'
 
@@ -53,36 +51,36 @@ More options:
     dependencies {
         ikvmCompile group: 'foo', name: 'bar', version: '1.0', type: '.dll'
     }
-    
+
     ikvm {
         // If defined, the plugin will use IKVM_HOME environment variable ...
         // ... otherwise it will download (& cache) Ikvm release zip from official download links (sourceforge & www.frijters.net) ...
         ikvmVersion = '7.2.4630.4'
-        
+
         // ... but you can also specify the Ikvm folder yourself then this will be used.
         ikvmHome = '../ikvm-0.46.0.1'
-        
-        
+
+
         // Below values have sensible __defaults__ but can be overriden
-        
+
         // Where will the assembly be generated
         destinationDir = jar.destinationDir
-        
+
         // Assembly name
         assemblyName = project.name
-        
+
         // Assembly version
         version = project.version
-        
+
         // KeyFile for assembly signing
         keyFile = null
-        
+
         // Generates PDB file for debugging purposes
         debug = true
-        
+
         // Generates XML documentation file (from javadoc through custom DocLet)
         generateDoc = false
-        
+
         // Other ikvmc options can be set:
         // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath ...
     }

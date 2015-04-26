@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.StringReader;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -862,8 +864,20 @@ public class IKVMDocLet extends Doclet {
         } else if (VERSION_PARAMETER.equals(option)) {
             return 1;
         }
-        // allow standard options, although they're ignored (for now) 
-        return ConfigurationImpl.getInstance().optionLength(option);
+        // allow standard options, although they're ignored (for now)
+        try {
+            // JDK 6-7 flavor
+            Method getInstance = ConfigurationImpl.class.getMethod("getInstance");
+            return ((ConfigurationImpl)getInstance.invoke(null)).optionLength(option);
+        } catch (Exception ignored) {
+            try {
+                // JDK 8 flavor
+                Constructor<ConfigurationImpl> ctor = ConfigurationImpl.class.getConstructor();
+                return ctor.newInstance().optionLength(option);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
     
     /**

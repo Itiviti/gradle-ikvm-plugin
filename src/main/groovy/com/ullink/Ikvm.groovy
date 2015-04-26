@@ -55,7 +55,7 @@ class Ikvm extends ConventionTask {
     }
     
     String getCompileConfigurationName() {
-        return String.format("%sCompile", this.name.toLowerCase());
+        return StringUtils.uncapitalize(String.format("%sCompile", this.name ));
     }
     
     @InputFile

@@ -1,7 +1,1 @@
 language: java
-
-jdk:
-  - oraclejdk7
-  
-script:
-  - gradle build

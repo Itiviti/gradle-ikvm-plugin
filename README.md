@@ -104,4 +104,4 @@ Sample usage: either invoke `gradle ikvmDoc` or customize it:
 
 # License
 
-All these plugins are licensed under the [Creative Commons :copyright: CC0 1.0 Universal](http://creativecommons.org/publicdomain/zero/1.0/) license with no warranty (expressed or implied) for any purpose.
+All these plugins are licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) with no warranty (expressed or implied) for any purpose.

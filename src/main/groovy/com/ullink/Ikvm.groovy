@@ -1,7 +1,7 @@
 package com.ullink
 
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.ConventionTask

@@ -1,6 +1,5 @@
 package com.ullink
 
-import org.gradle.api.GradleException
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.Task;
@@ -15,13 +14,11 @@ class IkvmPlugin implements Plugin<Project> {
                 if (System.getenv()['IKVM_HOME']) {
                     return System.getenv()['IKVM_HOME']
                 }
-                setupIkvmRepositories(project)
                 def version = task.getIkvmVersion()
-                downloadIkvm(project, version)
+                return "http://downloads.sourceforge.net/project/ikvm/ikvm/${version}/ikvmbin-${version}.zip"
             }
         }
 
-        project.apply plugin: 'repositories'
         project.apply plugin: 'java'
 
 		Task ikvm = project.task('ikvm', type: Ikvm)
@@ -32,39 +29,5 @@ class IkvmPlugin implements Plugin<Project> {
 		ikvmDoc.group = JavaBasePlugin.DOCUMENTATION_GROUP
 		ikvmDoc.description = 'Generates .Net API documentation (XML) for the main source code.'
 
-    }
-
-    File downloadIkvm(Project project, String version) {
-        def dest = new File(project.gradle.gradleUserHomeDir, 'ikvm')
-        if (!dest.exists()) {
-            dest.mkdirs()
-        }
-        def ret = new File(dest, "ikvm-${version}")
-        if (!ret.exists()) {
-            project.logger.info "Downloading & Unpacking Ikvm ${version}"
-            def dep = project.dependencies.create(group: 'ikvm', name: 'ikvm', version: version) {
-                artifact {
-                    name = 'ikvmbin'
-                    type = 'zip'
-                }
-            }
-            File zip = project.configurations.detachedConfiguration(dep).singleFile
-            if (!zip.isFile()) {
-                throw new GradleException("IKVM zip file '${zip}' doesn't exist")
-            }
-            project.ant.unzip(src: zip, dest: dest)
-        }
-        ret
-    }
-
-    void setupIkvmRepositories(Project project) {
-        if (!project.repositories.findByName('sourceforge-ikvm')) {
-            project.repositories.sourceforge('ikvm', '[module]/[revision]/[artifact]-[revision].[ext]') {
-                // this one is where Jeroen deploys beta/rc
-                ivy {
-                  artifactPattern('http://www.frijters.net/[artifact]-[revision].[ext]')
-                }
-            }
-        }
     }
 }

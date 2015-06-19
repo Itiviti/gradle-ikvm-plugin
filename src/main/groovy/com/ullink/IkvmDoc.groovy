@@ -10,10 +10,12 @@ class IkvmDoc extends Javadoc {
     IkvmDoc() {
         conventionMapping.map "classpath", { project.configurations.compile }
         conventionMapping.map "source", { project.sourceSets.main.allJava }
-        conventionMapping.map "assemblyFile", { project.tasks.ikvm.getDestFile() }
+        conventionMapping.map "assemblyFile", {
+            dependsOn(project.tasks.ikvm)
+            project.tasks.ikvm.getDestFile()
+        }
         options.doclet = IKVMDocLet.class.getName()
         options.docletpath = project.buildscript.configurations.classpath.files.asType(List)
-        dependsOn(project.tasks.ikvm)
     }
     
     protected void setOutput(AbstractTask task) {

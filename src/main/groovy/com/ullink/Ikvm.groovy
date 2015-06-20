@@ -1,8 +1,8 @@
 package com.ullink
 
+import org.apache.commons.codec.digest.DigestUtils
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils;
-
+import org.apache.commons.lang3.StringUtils
 import org.gradle.api.artifacts.Configuration;
 import org.gradle.api.internal.ConventionTask
 import org.gradle.api.tasks.InputFile
@@ -12,6 +12,7 @@ import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
 
 class Ikvm extends ConventionTask {
+    public static final String IKVM_EXE = 'bin/ikvmc.exe'
     def ikvmHome
     def ikvmVersion
     def destinationDir
@@ -42,7 +43,7 @@ class Ikvm extends ConventionTask {
         }
         outputs.files {
             if (debug) {
-                return new File(getDestDir(), getAssemblyName() + ".pdb")
+                getDestinationDebugFile()
             }
         }
         
@@ -60,10 +61,46 @@ class Ikvm extends ConventionTask {
     
     @InputFile
     def getIkvmc(){
-        assert getIkvmHome(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
-        File ikvmExec = new File(project.file(getIkvmHome()), 'bin/ikvmc.exe')
+        def home = resolveIkvmHome()
+        assert home, "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
+        File ikvmExec = new File(home, IKVM_EXE)
         assert ikvmExec.exists(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
         return ikvmExec
+    }
+
+    File resolveIkvmHome() {
+        def home = getIkvmHome()
+        URL url
+        if (home instanceof URL)
+            url = (URL)home
+        else if (home?.toString()?.startsWith("http"))
+            url = new URL(home.toString())
+        if (url) {
+            def dest = new File(project.gradle.gradleUserHomeDir, 'ikvm')
+            if (!dest.exists()) {
+                dest.mkdirs()
+            }
+            def urlSha1 = DigestUtils.shaHex(url.toString())
+            def ret = new File(dest, urlSha1)
+            if (!ret.exists()) {
+                project.logger.info "Downloading & Unpacking Ikvm ${url}"
+                def dlFile = new File(dest, "${urlSha1}.zip")
+                if (!dlFile.exists()) {
+                    dlFile.withOutputStream { out ->
+                        out << url.openStream()
+                    }
+                }
+                project.ant.unzip(src: dlFile, dest: ret)
+            }
+            if (new File(ret, IKVM_EXE).exists())
+                return ret
+            def sub = ret.listFiles().find {
+                new File(it, IKVM_EXE).exists()
+            }
+            assert sub, "${IKVM_EXE} not found in downloaded archive"
+            return sub
+        }
+        return project.file(home);
     }
 
     def ikvmcOptionalOnMono(){
@@ -91,7 +128,11 @@ class Ikvm extends ConventionTask {
     def getDestDir() {
         project.file(getDestinationDir())
     }
-    
+
+    def getDestinationDebugFile() {
+        return new File(getDestDir(), getAssemblyName() + ".pdb")
+    }
+
     @OutputFile
     def getDestFile() {
         String extension = ".dll"
@@ -168,7 +209,7 @@ class Ikvm extends ConventionTask {
         commandLineArgs += project.jar.archivePath
         commandLineArgs += getReferences().collect{"-reference:${it}"}
         
-        File debugFile = new File(getDestDir(), getAssemblyName() + ".pdb")
+        File debugFile = getDestinationDebugFile()
         if (debug && debugFile.isFile()) {
             debugFile.delete();
         }

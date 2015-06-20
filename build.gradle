@@ -1,15 +1,13 @@
 plugins {
     id "nu.studer.plugindev" version "1.0.3"
+    id "com.ullink.functions" version "1.0"
+    id "com.jfrog.bintray" version "1.2"
 }
 
 apply plugin: 'groovy'
 
-ext.ullinkGradleScripts = 'https://raw.github.com/gluck/gradle-scripts/master'
-apply from: "${ext.ullinkGradleScripts}/task-rules.gradle"
-apply from: "${ext.ullinkGradleScripts}/functions.gradle"
-
 group = 'com.ullink.gradle'
-version = '2.3'
+version = '2.4'
 description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation'
 
 sourceCompatibility = 1.6
@@ -17,7 +15,6 @@ sourceCompatibility = 1.6
 dependencies {
     compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
     compile getTools()
-    compile 'com.ullink.gradle:gradle-repositories-plugin:2.1'
     compile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'junit:junit:4.8.2'
 }

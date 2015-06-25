@@ -81,6 +81,13 @@ More options:
         // Generates XML documentation file (from javadoc through custom DocLet)
         generateDoc = false
 
+        // Whether to handle warnings as errors - not compatible with all IKVM versions
+        // as it was introduced in IKVM 7. If necessary, use the code specific one
+        warnAsError = true
+
+        // Warning codes that should be considered as errors
+        warnAsError = [105, 110, 120]
+
         // Other ikvmc options can be set:
         // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath ...
     }

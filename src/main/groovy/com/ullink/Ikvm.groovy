@@ -29,6 +29,7 @@ class Ikvm extends ConventionTask {
     String target
     String main
     String platform
+    def warnAsError
     
     Ikvm() {
         conventionMapping.map "destinationDir", { project.jar.destinationDir }
@@ -163,6 +164,14 @@ class Ikvm extends ConventionTask {
         }
         if (delaySign) {
             commandLineArgs += "-delaysign"
+        }
+        if (warnAsError.any()) {
+            warnAsError.each {
+                commandLineArgs += "-warnaserror:$it"
+            }
+        }
+        else if (warnAsError) {
+            commandLineArgs += "-warnaserror"
         }
 
         commandLineArgs += project.jar.archivePath

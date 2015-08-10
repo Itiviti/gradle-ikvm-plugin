@@ -9,7 +9,7 @@ import org.gradle.api.plugins.JavaBasePlugin;
 class IkvmPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.tasks.withType(Ikvm).whenTaskAdded { Ikvm task ->
-            task.conventionMapping.map "ikvmVersion", { '7.2.4630.4' }
+            task.conventionMapping.map "ikvmVersion", { '7.2.4630.5' }
             task.conventionMapping.map "ikvmHome", {
                 if (System.getenv()['IKVM_HOME']) {
                     return System.getenv()['IKVM_HOME']

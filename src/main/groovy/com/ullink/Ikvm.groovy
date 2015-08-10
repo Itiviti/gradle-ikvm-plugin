@@ -60,7 +60,6 @@ class Ikvm extends ConventionTask {
         return StringUtils.uncapitalize(String.format("%sCompile", this.name ));
     }
     
-    @InputFile
     def getIkvmc(){
         def home = resolveIkvmHome()
         assert home, "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"

@@ -26,7 +26,7 @@ class IkvmDoc extends Javadoc {
     
     File getDestinationFile() {
         File assembly = getAbsoluteAssemblyFile()
-        String assemblyName = assembly.name.substring(assembly.name.lastIndexOf('.'))
+        String assemblyName = assembly.name.substring(0, assembly.name.lastIndexOf('.'))
         new File(assembly.getParent(), assemblyName + ".xml");
     }
     

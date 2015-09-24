@@ -125,7 +125,7 @@ class Ikvm extends ConventionTask {
         return new File[0]
     }
 
-    @InputFiles
+    @InputFile
     def getJar() {
         return project.jar.archivePath
     }      
@@ -219,7 +219,7 @@ class Ikvm extends ConventionTask {
             commandLineArgs += "-warnaserror"
         }
 
-        commandLineArgs += project.jar.archivePath
+        commandLineArgs += getJar()
         commandLineArgs += getReferences().collect{"-reference:${it}"}
         
         File debugFile = getDestinationDebugFile()

@@ -8,10 +8,10 @@ It supports various IKVM flags, and also allows for .Net API documentation gener
 - Supports all IKVM flags.
 - Easy way to include 3rd party DLLs into the build process.
 - No need to install IKVM locally as it can be downloaded during the build process. Handy for CI Enviroments.
-- Works also on Unix & Mac by using [Mono](http://www.mono-project.com/). 
+- Works also on Unix & Mac by using [Mono](http://www.mono-project.com/).
 
 
-Below tasks are provided by the plugin:
+Below tasks are provided by the plugin, if you apply the `ikvm` plugin. You can alternatively apply just the ikvm-base if you want to create your custom tasks.
 
 ## ikvm
 

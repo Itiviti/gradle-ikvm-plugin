@@ -89,7 +89,7 @@ More options:
         warnAsError = [105, 110, 120]
 
         // Other ikvmc options can be set:
-        // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath ...
+        // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath, reference ...
     }
 
 ## Usage

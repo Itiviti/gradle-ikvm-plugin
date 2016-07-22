@@ -30,6 +30,7 @@ class Ikvm extends ConventionTask {
     String target
     String main
     String platform
+    String reference
     def warnAsError
     
     Ikvm() {
@@ -203,6 +204,9 @@ class Ikvm extends ConventionTask {
         }
         if (platform) {
             commandLineArgs += "-platform:${platform}"
+        }
+        if (reference) {
+            commandLineArgs += "-reference:${reference}"
         }
         if (main) {
             commandLineArgs += "-target:${main}"

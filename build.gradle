@@ -16,6 +16,7 @@ dependencies {
     compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
     compile getTools()
     compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'commons-io:commons-io:2.5'
     compile 'commons-codec:commons-codec:1.10'
     testCompile 'junit:junit:4.8.2'
 }

@@ -1,5 +1,8 @@
 package com.ullink
 
+import org.gradle.api.tasks.bundling.Jar
+import org.junit.Before
+
 import static org.junit.Assert.*
 import org.gradle.api.Project
 import org.gradle.testfixtures.ProjectBuilder
@@ -16,5 +19,36 @@ class IkvmPluginTest {
             ikvmHome = 'abc'
         }
         assertEquals('abc', project.tasks.ikvm.ikvmHome)
+    }
+
+    @Test
+    public void ensureIkvmTaskdependsOnJarByDefault() {
+        Project project = ProjectBuilder.builder().build()
+        project.apply plugin: 'ikvm'
+        project.evaluate()
+        assertTrue(project.ikvm.dependsOn.contains(project.jar))
+    }
+
+    @Test
+    public void shouldDependOnOtherTaskWhenTargetingAnotherJar() {
+        Project project = ProjectBuilder.builder().build()
+        project.apply plugin: 'ikvm'
+        project.task('otherJar', type: Jar) {
+            baseName = 'foo'
+        }
+        project.ikvm {
+            jars = [ project.otherJar.archivePath ]
+        }
+        project.evaluate()
+        assertFalse(project.ikvm.dependsOn.contains(project.jar))
+        assertTrue(project.ikvm.dependsOn.contains(project.otherJar))
+    }
+
+    @Test
+    public void commandLineContainsJar() {
+        Project project = ProjectBuilder.builder().build()
+        project.apply plugin: 'ikvm'
+        def cmd = project.ikvm.commandLineArgs
+        assertTrue(cmd.contains(project.jar.archivePath))
     }
 }

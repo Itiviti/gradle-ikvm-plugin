@@ -9,6 +9,7 @@ import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.bundling.Jar
 import org.gradle.internal.os.OperatingSystem
 
 class Ikvm extends ConventionTask {
@@ -31,12 +32,15 @@ class Ikvm extends ConventionTask {
     String main
     String platform
     def warnAsError
-    
+
+    @InputFiles
+    def jars
+
     Ikvm() {
         conventionMapping.map "destinationDir", { project.jar.destinationDir }
+        conventionMapping.map "jars", { [ project.jar.archivePath ] }
         conventionMapping.map "assemblyName", { project.name }
         conventionMapping.map "version", { project.version }
-        dependsOn(project.tasks.jar)
         outputs.files {
             if (generateDoc) {
                 return project.tasks.ikvmDoc.getDestinationFile()
@@ -45,6 +49,14 @@ class Ikvm extends ConventionTask {
         outputs.files {
             if (debug) {
                 getDestinationDebugFile()
+            }
+        }
+        project.afterEvaluate {
+            def src = getJars()
+            project.tasks.withType(Jar.class).matching {
+                src.contains(it.archivePath)
+            }.each {
+                dependsOn it
             }
         }
         
@@ -125,11 +137,6 @@ class Ikvm extends ConventionTask {
         return new File[0]
     }
 
-    @InputFile
-    def getJar() {
-        return project.jar.archivePath
-    }      
-    
     def getDestDir() {
         project.file(getDestinationDir())
     }
@@ -160,17 +167,16 @@ class Ikvm extends ConventionTask {
         }
         new File(getDestDir(), getAssemblyName() + extension)
     }
-    
-    @TaskAction
-    def build() {
+
+    def getCommandLineArgs() {
         def commandLineArgs = ikvmcOptionalOnMono()
 
         def destFile = getDestFile()
         commandLineArgs += "-out:${destFile}"
-        
+
         def version = getVersion().replaceAll("[^0-9.]+", "")
         commandLineArgs += "-version:${version}"
-        
+
         if (fileVersion) {
             commandLineArgs += "-fileversion:${fileVersion}"
         }
@@ -219,9 +225,14 @@ class Ikvm extends ConventionTask {
             commandLineArgs += "-warnaserror"
         }
 
-        commandLineArgs += getJar()
+        commandLineArgs += getJars()
         commandLineArgs += getReferences().collect{"-reference:${it}"}
-        
+
+        return commandLineArgs;
+    }
+    
+    @TaskAction
+    def build() {
         File debugFile = getDestinationDebugFile()
         if (debug && debugFile.isFile()) {
             debugFile.delete();

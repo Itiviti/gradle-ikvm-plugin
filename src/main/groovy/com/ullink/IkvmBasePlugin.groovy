@@ -24,7 +24,7 @@ class IkvmBasePlugin implements Plugin<Project> {
         connection.setRequestMethod("HEAD")
         if (connection.responseCode == 200) {
             return defaultUrl
-        }else{
+        } else {
             return betaUrl
         }
     }

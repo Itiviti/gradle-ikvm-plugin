@@ -60,8 +60,10 @@ More options:
         // ... but you can also specify the Ikvm folder yourself then this will be used.
         ikvmHome = '../ikvm-0.46.0.1'
 
-
         // Below values have sensible __defaults__ but can be overriden
+
+        // input jar(s) to transform to IL (defaults to jar task output)
+        jars = [ jar.archivePath ]
 
         // Where will the assembly be generated
         destinationDir = jar.destinationDir

@@ -27,11 +27,11 @@ class Ikvm extends ConventionTask {
     boolean compressResources = true
     boolean generateDoc = false
     boolean delaySign = false
+    boolean nojni = false
     String classloader
     String target
     String main
     String platform
-    String nojni
     String remap
     def warnAsError
 

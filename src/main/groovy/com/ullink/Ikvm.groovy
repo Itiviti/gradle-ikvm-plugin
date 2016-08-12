@@ -31,6 +31,8 @@ class Ikvm extends ConventionTask {
     String target
     String main
     String platform
+    String nojni
+    String remap
     def warnAsError
 
     @InputFiles
@@ -215,6 +217,12 @@ class Ikvm extends ConventionTask {
         }
         if (delaySign) {
             commandLineArgs += "-delaysign"
+        }
+        if (nojni) {
+            commandLineArgs += "-nojni"
+        }
+        if (remap) {
+            commandLineArgs += "-remap:${remap}"
         }
         if (warnAsError.any()) {
             warnAsError.each {

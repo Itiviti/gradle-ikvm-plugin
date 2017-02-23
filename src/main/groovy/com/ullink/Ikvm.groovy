@@ -28,6 +28,7 @@ class Ikvm extends ConventionTask {
     boolean generateDoc = false
     boolean delaySign = false
     boolean nojni = false
+    boolean nostdlib = false
     String classloader
     String target
     String main
@@ -220,6 +221,9 @@ class Ikvm extends ConventionTask {
         }
         if (nojni) {
             commandLineArgs += "-nojni"
+        }
+        if (nostdlib) {
+            commandLineArgs += "-nostdlib"
         }
         if (remap) {
             commandLineArgs += "-remap:${remap}"

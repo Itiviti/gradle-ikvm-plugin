@@ -92,6 +92,9 @@ More options:
 
         // Other ikvmc options can be set:
         // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath ...
+        
+        //removes the current CLR runtime directory from the search path, you should add reference dependencies manually see ikvmCompile
+        nostdlib = true
     }
 
 ## Usage

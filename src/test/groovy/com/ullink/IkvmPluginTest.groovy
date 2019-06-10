@@ -1,13 +1,18 @@
 package com.ullink
 
+import org.gradle.api.Project
 import org.gradle.api.tasks.bundling.Jar
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Rule
+import org.junit.Test
+import org.junit.rules.TemporaryFolder
 
 import static org.junit.Assert.*
-import org.gradle.api.Project
-import org.gradle.testfixtures.ProjectBuilder
-import org.junit.Test
 
 class IkvmPluginTest {
+    @Rule
+    public TemporaryFolder temporaryFolder = new TemporaryFolder()
+
     @Test
     void ikvmPluginAddsIkvmTasksToProject() {
         Project project = ProjectBuilder.builder().build()
@@ -17,7 +22,7 @@ class IkvmPluginTest {
         project.ikvm {
             ikvmHome = 'abc'
         }
-        assertEquals('abc', project.tasks.ikvm.ikvmHome)
+        assertEquals('abc', project.tasks.ikvm.ikvmHome.get())
     }
 
     @Test
@@ -36,7 +41,7 @@ class IkvmPluginTest {
             baseName = 'foo'
         }
         project.ikvm {
-            jars = [ project.otherJar.archivePath ]
+            jars = [ project.otherJar.archiveFile.get() ]
         }
         project.evaluate()
         assertFalse(project.ikvm.dependsOn.contains(project.jar))
@@ -45,9 +50,18 @@ class IkvmPluginTest {
 
     @Test
     void commandLineContainsJar() {
+        def home = temporaryFolder.newFolder()
+        new File(home, 'bin').mkdir()
+        new File(home, 'bin/ikvmc.exe').createNewFile()
+
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'ikvm'
+        project.ikvm {
+            ikvmHome = home.path
+        }
+
         def cmd = project.ikvm.commandLineArgs
-        assertTrue(cmd.contains(project.jar.archivePath))
+        def jarFile = project.jar.archiveFile.get().toString()
+        assertTrue(cmd.contains(jarFile))
     }
 }

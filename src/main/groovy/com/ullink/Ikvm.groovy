@@ -96,7 +96,7 @@ class Ikvm extends DefaultTask {
     }
 
     File resolveIkvmHome() {
-        def home = getIkvmHome()
+        def home = ikvmHome.get()
         URL url
         if (home instanceof URL)
             url = (URL)home

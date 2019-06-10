@@ -1,7 +1,6 @@
 package com.ullink
 
 import org.gradle.api.tasks.bundling.Jar
-import org.junit.Before
 
 import static org.junit.Assert.*
 import org.gradle.api.Project
@@ -10,7 +9,7 @@ import org.junit.Test
 
 class IkvmPluginTest {
     @Test
-    public void ikvmPluginAddsIkvmTasksToProject() {
+    void ikvmPluginAddsIkvmTasksToProject() {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'ikvm'
         assertTrue(project.tasks.ikvm instanceof Ikvm)
@@ -22,7 +21,7 @@ class IkvmPluginTest {
     }
 
     @Test
-    public void ensureIkvmTaskdependsOnJarByDefault() {
+    void ensureIkvmTaskdependsOnJarByDefault() {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'ikvm'
         project.evaluate()
@@ -30,7 +29,7 @@ class IkvmPluginTest {
     }
 
     @Test
-    public void shouldDependOnOtherTaskWhenTargetingAnotherJar() {
+    void shouldDependOnOtherTaskWhenTargetingAnotherJar() {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'ikvm'
         project.task('otherJar', type: Jar) {
@@ -45,7 +44,7 @@ class IkvmPluginTest {
     }
 
     @Test
-    public void commandLineContainsJar() {
+    void commandLineContainsJar() {
         Project project = ProjectBuilder.builder().build()
         project.apply plugin: 'ikvm'
         def cmd = project.ikvm.commandLineArgs

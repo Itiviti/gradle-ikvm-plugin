@@ -1,8 +1,8 @@
 plugins {
-    id "nu.studer.plugindev" version "1.0.3"
+    id "nu.studer.plugindev" version "1.0.12"
     id "com.ullink.functions" version "1.0"
-    id "com.jfrog.bintray" version "1.2"
-    id 'net.researchgate.release' version '2.3.4'
+    id "com.jfrog.bintray" version "1.8.4"
+    id 'net.researchgate.release' version '2.8.0'
 }
 
 apply plugin: 'groovy'
@@ -10,15 +10,11 @@ apply plugin: 'groovy'
 group = 'com.ullink.gradle'
 description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.8
 
 dependencies {
-    compile fileTree(dir: "${gradle.gradleHomeDir}/lib/plugins", include: "gradle-plugins-*.jar")
     compile getTools()
-    compile 'org.apache.commons:commons-lang3:3.4'
-    compile 'commons-io:commons-io:2.5'
-    compile 'commons-codec:commons-codec:1.10'
-    testCompile 'junit:junit:4.8.2'
+    testCompile 'junit:junit:4.12'
 }
 
 bintray {
@@ -43,14 +39,6 @@ plugindev {
     projectUrl "https://github.com/Ullink/${project.name}"
     projectInceptionYear '2012'
     done()
-}
-
-if (JavaVersion.current().isJava8Compatible()) {
-    allprojects {
-        tasks.withType(Javadoc) {
-            options.addStringOption('Xdoclint:none', '-quiet')
-        }
-    }
 }
 
 project.tasks.afterReleaseBuild.dependsOn project.tasks.bintrayUpload

@@ -1,5 +1,11 @@
 # Gradle IKVM plugin ChangeLog
 
+## 2.10
+* gradle 5.0 support
+* built by gradle 5.4.1
+* minimum requirement of jdk is now 1.8
+* remove unnecessary dependencies
+
 ## 2.9
 
 ### Added

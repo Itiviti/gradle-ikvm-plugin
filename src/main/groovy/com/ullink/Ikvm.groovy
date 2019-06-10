@@ -1,26 +1,29 @@
 package com.ullink
 
-import org.apache.commons.codec.digest.DigestUtils
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang3.StringUtils
-import org.gradle.api.artifacts.Configuration;
-import org.gradle.api.internal.ConventionTask
-import org.gradle.api.tasks.InputFile
+import org.gradle.api.DefaultTask
+import org.gradle.api.artifacts.Configuration
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
-import org.gradle.api.tasks.bundling.Jar
 import org.gradle.internal.os.OperatingSystem
+import org.gradle.jvm.tasks.Jar
 
-class Ikvm extends ConventionTask {
+import java.nio.file.Files
+
+class Ikvm extends DefaultTask {
     public static final String IKVM_EXE = 'bin/ikvmc.exe'
-    def ikvmHome
-    def ikvmVersion
-    def destinationDir
-    String assemblyName
+
+    Property<String> ikvmHome
+    Property<String> ikvmVersion
+    DirectoryProperty destinationDir
+    Property<String> assemblyName
     boolean debug = true
     def keyFile
-    String version
+    Property<String> version
     String fileVersion
     def srcPath
     boolean removeAssertions = true
@@ -37,42 +40,51 @@ class Ikvm extends ConventionTask {
     def warnAsError
 
     @InputFiles
-    def jars
+    ListProperty<RegularFile> jars
 
     Ikvm() {
-        conventionMapping.map "destinationDir", { project.jar.destinationDir }
-        conventionMapping.map "jars", { [ project.jar.archivePath ] }
-        conventionMapping.map "assemblyName", { project.name }
-        conventionMapping.map "version", { project.version }
-        outputs.files {
-            if (generateDoc) {
-                return project.tasks.ikvmDoc.getDestinationFile()
-            }
-        }
-        outputs.files {
-            if (debug) {
-                getDestinationDebugFile()
-            }
-        }
+        ikvmHome = project.objects.property(String)
+        ikvmVersion = project.objects.property(String)
+        destinationDir = project.objects.directoryProperty()
+        jars = project.objects.listProperty(RegularFile)
+        assemblyName = project.objects.property(String)
+        version = project.objects.property(String)
+
+        def jarTask = (Jar)project.jar
+        destinationDir.convention(jarTask.destinationDirectory)
+        jars.convention(project.provider { [ jarTask.archiveFile.get() ] })
+        assemblyName.convention(project.name)
+        version.convention(project.version)
+
         project.afterEvaluate {
-            def src = getJars()
-            project.tasks.withType(Jar.class).matching {
-                src.contains(it.archivePath)
+            def src = jars.get()
+            project.tasks.withType(Jar).find {
+                src.contains(it.archiveFile.get())
             }.each {
                 dependsOn it
             }
+            if (generateDoc) {
+                outputs.files {
+                    return project.tasks.ikvmDoc.getDestinationFile()
+                }
+            }
+            if (debug) {
+                outputs.files {
+                    getDestinationDebugFile()
+                }
+            }
         }
-        
-        Configuration compileConfiguration = (Configuration)project.configurations.findByName(getCompileConfigurationName());
+
+        Configuration compileConfiguration = (Configuration) project.configurations.findByName(getCompileConfigurationName())
         if (compileConfiguration == null) {
-            compileConfiguration = project.configurations.maybeCreate(getCompileConfigurationName());
+            compileConfiguration = project.configurations.maybeCreate(getCompileConfigurationName())
         }
         compileConfiguration.transitive = true
         compileConfiguration.description = this.name + ' compile classpath'
     }
     
     String getCompileConfigurationName() {
-        return StringUtils.uncapitalize(String.format("%sCompile", this.name ));
+        String.format("%sCompile", this.name).toLowerCase()
     }
     
     def getIkvmc(){
@@ -95,7 +107,7 @@ class Ikvm extends ConventionTask {
             if (!dest.exists()) {
                 dest.mkdirs()
             }
-            def urlSha1 = DigestUtils.shaHex(url.toString())
+            def urlSha1 = url.toString().digest('SHA-1')
             def ret = new File(dest, urlSha1)
             if (!ret.exists()) {
                 project.logger.info "Downloading & Unpacking Ikvm ${url}"
@@ -115,10 +127,10 @@ class Ikvm extends ConventionTask {
             assert sub, "${IKVM_EXE} not found in downloaded archive"
             return sub
         }
-        return project.file(home);
+        return project.file(home)
     }
 
-    def ikvmcOptionalOnMono(){
+    def ikvmcOptionalOnMono (){
         if (!OperatingSystem.current().windows){
             project.logger.info "Using Mono for IKVM"
             return ["mono",getIkvmc()]
@@ -141,11 +153,11 @@ class Ikvm extends ConventionTask {
     }
 
     def getDestDir() {
-        project.file(getDestinationDir())
+        project.file(destinationDir.get())
     }
 
     def getDestinationDebugFile() {
-        return new File(getDestDir(), getAssemblyName() + ".pdb")
+        return new File(getDestDir(), assemblyName.get() + ".pdb")
     }
 
     @OutputFile
@@ -157,18 +169,18 @@ class Ikvm extends ConventionTask {
             {
                 case "library":
                     extension = ".dll"
-                    break;
+                    break
                 case "module":
                     extension = ".netmodule"
-                    break;
+                    break
                 case "exe":
                 case "winexe":
                 default:
                     extension = ".exe"
-                    break;
+                    break
             }
         }
-        new File(getDestDir(), getAssemblyName() + extension)
+        new File(getDestDir(), assemblyName.get() + extension)
     }
 
     def getCommandLineArgs() {
@@ -177,7 +189,7 @@ class Ikvm extends ConventionTask {
         def destFile = getDestFile()
         commandLineArgs += "-out:${destFile}"
 
-        def version = getVersion().replaceAll("[^0-9.]+", "")
+        def version = version.get().replaceAll("[^0-9.]+", "")
         commandLineArgs += "-version:${version}"
 
         if (fileVersion) {
@@ -237,26 +249,26 @@ class Ikvm extends ConventionTask {
             commandLineArgs += "-warnaserror"
         }
 
-        commandLineArgs += getJars()
+        commandLineArgs += jars.get().collect { it.asFile.path }
         commandLineArgs += getReferences().collect{"-reference:${it}"}
 
-        return commandLineArgs;
+        return commandLineArgs
     }
     
     @TaskAction
     def build() {
         File debugFile = getDestinationDebugFile()
         if (debug && debugFile.isFile()) {
-            debugFile.delete();
+            debugFile.delete()
         }
         project.exec {
-            commandLine = commandLineArgs
+            commandLine(commandLineArgs)
         }
         if (debug && !debugFile.isFile()) {
             // bug in IKVM 0.40
-            File shitFile = new File(getAssemblyName() + ".pdb")
+            File shitFile = new File(assemblyName.get() + ".pdb")
             if (shitFile.isFile()) {
-                FileUtils.moveFile(shitFile, debugFile)
+                Files.move(shitFile.toPath(), debugFile.toPath())
             }
         }
         if (generateDoc && !project.gradle.taskGraph.hasTask(project.tasks.ikvmDoc)) {

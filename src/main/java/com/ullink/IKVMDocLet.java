@@ -50,7 +50,7 @@ import com.sun.tools.javadoc.Main;
  * </ul>
  * <p>
  * Other issues:
- * <p>
+ * </p>
  * <pre>
  * <b>Usage reports "javadoc" instead of "ikvmdoc"</b>:
  * 
@@ -62,11 +62,11 @@ import com.sun.tools.javadoc.Main;
  * </pre>
  * <p>
  * HTML tag parsing is not forgiving; should be made more fault tolerant
- * <p>
- * Javadoc HTML -> .NET tag conversions that should be considered/evaluated:
- * <code>true</code> -> <see langref="true"/>
- * <code>false</code> -> <see langref="false"/>
- * <code>null</code> -> <see langref="null"/>
+ * </p>
+ * Javadoc HTML -&#x3E; .NET tag conversions that should be considered/evaluated:
+ * <code>true</code> -&#x3E; &#x3C;see langref="true"/&#x3E;
+ * <code>false</code> -&#x3E; &#x3C;see langref="false"/&#x3E;
+ * <code>null</code> -&#x3E; &#x3C;see langref="null"/&#x3E;
  *
  * References:
  *  http://weblog.ikvm.net/CommentView.aspx?guid=0259c2c8-e9c1-4c92-88e5-5b459da76b86

@@ -47,9 +47,9 @@ Build script snippet can be used instead with Gradle 2.1+
 
 More options:
 
-    // ikvmCompile allows to provide 3rd Party DLLs to the process (provided the dlls are available in some repository of yours)
+    // ikvmcompile allows to provide 3rd Party DLLs to the process (provided the dlls are available in some repository of yours)
     dependencies {
-        ikvmCompile group: 'foo', name: 'bar', version: '1.0', type: '.dll'
+        ikvmcompile group: 'foo', name: 'bar', version: '1.0', type: '.dll'
     }
 
     ikvm {
@@ -93,7 +93,7 @@ More options:
         // Other ikvmc options can be set:
         // fileVersion, target, main, classloader, delaySign, compressResources, removeAssertions, srcPath ...
         
-        //removes the current CLR runtime directory from the search path, you should add reference dependencies manually see ikvmCompile
+        //removes the current CLR runtime directory from the search path, you should add reference dependencies manually see ikvmcompile
         nostdlib = true
     }
 

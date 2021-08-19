@@ -1,5 +1,8 @@
 # Gradle IKVM plugin ChangeLog
 
+## 2.11
+* gradle 7.0 support
+
 ## 2.10
 * gradle 5.0 support
 * built by gradle 5.4.1

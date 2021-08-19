@@ -1,11 +1,12 @@
 plugins {
-    id "nu.studer.plugindev" version "1.0.12"
+    id 'com.gradle.plugin-publish' version '0.15.0'
     id "com.ullink.functions" version "1.0"
-    id "com.jfrog.bintray" version "1.8.4"
     id 'net.researchgate.release' version '2.8.0'
 }
 
+apply plugin: 'java-gradle-plugin'
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 group = 'com.ullink.gradle'
 description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation'
@@ -13,32 +14,29 @@ description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation
 sourceCompatibility = 1.8
 
 dependencies {
-    compile getTools()
-    testCompile 'junit:junit:4.12'
+    implementation getTools()
+    testImplementation 'junit:junit:4.12'
 }
 
-bintray {
-    // to remove when upgraded plugindev to 1.0.4
-    user project.properties.bintrayUser
-    key project.properties.bintrayApiKey
-    pkg.repo = 'gradle-plugins'
-    pkg.version.gpg.sign = true
-    pkg.userOrg = 'ullink'
+pluginBundle {
+    website = 'https://github.com/Itiviti/gradle-ikvm-plugin'
+    vcsUrl = 'https://github.com/Itiviti/gradle-ikvm-plugin'
+    tags = ['ikvm', 'c#', '.net']
+
+    mavenCoordinates {
+        groupId = 'com.ullink.gradle'
+    }
 }
 
-plugindev {
-    pluginId 'com.ullink.ikvm'
-    pluginName 'com.ullink.gradle:gradle-ikvm-plugin'
-    pluginImplementationClass 'com.ullink.IkvmPlugin'
-    pluginDescription project.description
-    pluginLicenses 'Apache-2.0'
-    pluginTags 'gradle', 'ikvm', 'java'
-    authorId 'gluck'
-    authorName 'Francois Valdy'
-    authorEmail 'francois.valdy@gmail.com'
-    projectUrl "https://github.com/Ullink/${project.name}"
-    projectInceptionYear '2012'
-    done()
+gradlePlugin {
+    plugins {
+        ikvmPlugin {
+            id = 'com.ullink.ikvm'
+            description = project.description
+            displayName = 'Gradle IKVM Plugin'
+            implementationClass = 'com.ullink.IkvmPlugin'
+        }
+    }
 }
 
-project.tasks.afterReleaseBuild.dependsOn project.tasks.bintrayUpload
+afterReleaseBuild.dependsOn publishPlugins

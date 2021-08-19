@@ -6,6 +6,9 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
@@ -17,26 +20,48 @@ import java.nio.file.Files
 class Ikvm extends DefaultTask {
     public static final String IKVM_EXE = 'bin/ikvmc.exe'
 
-    Property<String> ikvmHome
-    Property<String> ikvmVersion
-    DirectoryProperty destinationDir
-    Property<String> assemblyName
+    @Input
+    final Property<String> ikvmHome
+    @Input
+    final Property<String> ikvmVersion
+    @Input
+    final DirectoryProperty destinationDir
+    @Input
+    final Property<String> assemblyName
+    @Input
     boolean debug = true
+    @Internal
     def keyFile
-    Property<String> version
+    @Internal
+    final Property<String> version
+    @Internal
     String fileVersion
+    @Internal
     def srcPath
+    @Internal
     boolean removeAssertions = true
+    @Internal
     boolean compressResources = true
+    @Internal
     boolean generateDoc = false
+    @Internal
     boolean delaySign = false
+    @Internal
     boolean nojni = false
+    @Internal
     boolean nostdlib = false
+    @Internal
     String classloader
+    @Internal
     String target
+    @Internal
     String main
+    @Internal
     String platform
+    @Internal
     String remap
+    @Input
+    @Optional
     def warnAsError
 
     @InputFiles
@@ -183,6 +208,7 @@ class Ikvm extends DefaultTask {
         new File(getDestDir(), assemblyName.get() + extension)
     }
 
+    @Input
     def getCommandLineArgs() {
         def commandLineArgs = ikvmcOptionalOnMono()
 

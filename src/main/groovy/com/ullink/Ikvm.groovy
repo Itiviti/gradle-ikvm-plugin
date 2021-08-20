@@ -7,9 +7,11 @@ import org.gradle.api.file.RegularFile
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.os.OperatingSystem
@@ -24,7 +26,7 @@ class Ikvm extends DefaultTask {
     final Property<String> ikvmHome
     @Input
     final Property<String> ikvmVersion
-    @Input
+    @OutputDirectory
     final DirectoryProperty destinationDir
     @Input
     final Property<String> assemblyName
@@ -107,11 +109,13 @@ class Ikvm extends DefaultTask {
         compileConfiguration.transitive = true
         compileConfiguration.description = this.name + ' compile classpath'
     }
-    
+
+    @Internal
     String getCompileConfigurationName() {
         String.format("%sCompile", this.name).toLowerCase()
     }
-    
+
+    @Internal
     def getIkvmc(){
         def home = resolveIkvmHome()
         assert home, "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
@@ -177,10 +181,12 @@ class Ikvm extends DefaultTask {
         return new File[0]
     }
 
+    @Internal
     def getDestDir() {
         project.file(destinationDir.get())
     }
 
+    @Internal
     def getDestinationDebugFile() {
         return new File(getDestDir(), assemblyName.get() + ".pdb")
     }

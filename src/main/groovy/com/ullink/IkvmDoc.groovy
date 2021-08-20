@@ -1,11 +1,15 @@
 package com.ullink
 
+import org.gradle.api.Task
 import org.gradle.api.internal.AbstractTask
 import org.gradle.api.tasks.InputFile
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.TaskAction
 import org.gradle.api.tasks.javadoc.Javadoc
 
 class IkvmDoc extends Javadoc {
+    @Internal
     def assemblyFile
     IkvmDoc() {
         conventionMapping.map "classpath", { project.configurations.compile }
@@ -18,12 +22,13 @@ class IkvmDoc extends Javadoc {
         options.docletpath = project.buildscript.configurations.classpath.files.asType(List)
     }
     
-    protected void setOutput(AbstractTask task) {
+    protected void setOutput(Task task) {
         task.getOutputs().file {
             getDestinationFile()
         }
     }
-    
+
+    @OutputFile
     File getDestinationFile() {
         File assembly = getAbsoluteAssemblyFile()
         String assemblyName = assembly.name.substring(0, assembly.name.lastIndexOf('.'))

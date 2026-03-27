@@ -7,6 +7,10 @@ apply plugin: 'java-gradle-plugin'
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
 
+repositories {
+    mavenCentral()
+}
+
 group = 'com.ullink.gradle'
 description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation'
 

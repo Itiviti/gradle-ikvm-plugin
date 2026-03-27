@@ -1,13 +1,13 @@
 package com.ullink
 
-import org.gradle.api.DefaultTask
 import org.gradle.api.artifacts.Configuration
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
+import org.gradle.api.logging.LogLevel
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.Exec
 import org.gradle.api.tasks.Input
-import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.InputFiles
@@ -19,7 +19,7 @@ import org.gradle.jvm.tasks.Jar
 
 import java.nio.file.Files
 
-class Ikvm extends DefaultTask {
+abstract class Ikvm extends Exec {
     public static final String IKVM_EXE = 'bin/ikvmc.exe'
 
     @Input
@@ -82,6 +82,7 @@ class Ikvm extends DefaultTask {
         jars.convention(project.provider { [ jarTask.archiveFile.get() ] })
         assemblyName.convention(project.name)
         version.convention(project.version)
+        logging.captureStandardOutput(LogLevel.INFO)
 
         project.afterEvaluate {
             def src = jars.get()
@@ -167,7 +168,7 @@ class Ikvm extends DefaultTask {
         return [getIkvmc()]
     }
 
-    
+
     @InputFiles
     def getReferences() {
         project.configurations.findByName(getCompileConfigurationName()).collect()
@@ -288,14 +289,16 @@ class Ikvm extends DefaultTask {
     }
     
     @TaskAction
-    def build() {
+    @Override
+    protected void exec() {
         File debugFile = getDestinationDebugFile()
         if (debug && debugFile.isFile()) {
             debugFile.delete()
         }
-        project.exec {
-            commandLine(commandLineArgs)
-        }
+
+        commandLine(commandLineArgs)
+
+        super.exec()
         if (debug && !debugFile.isFile()) {
             // bug in IKVM 0.40
             File shitFile = new File(assemblyName.get() + ".pdb")

@@ -1,6 +1,5 @@
 plugins {
     id 'com.gradle.plugin-publish' version '0.15.0'
-    id "com.ullink.functions" version "1.0"
     id 'net.researchgate.release' version '2.8.0'
 }
 
@@ -12,6 +11,19 @@ group = 'com.ullink.gradle'
 description 'gradle-ikvm-plugin is a Gradle plugin for IKVM artifact compilation'
 
 sourceCompatibility = 1.8
+
+def getTools = { ->
+    def jHome = System.getProperty('java.home')
+    def path = new File(jHome, 'lib/tools.jar')
+    if (path.exists()) {
+        return project.files(path)
+    }
+    path = new File(jHome, '../lib/tools.jar')
+    if (path.exists()) {
+        return project.files(path)
+    }
+    assert false, "Failed to find tools.jar"
+}
 
 dependencies {
     implementation getTools()

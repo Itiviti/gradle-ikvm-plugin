@@ -1,7 +1,7 @@
 # Gradle IKVM plugin ChangeLog
 
-## 2.13
-* Write `ikvmc.exe.config` alongside `ikvmc.exe` after IKVM extraction to redirect CLR activation to v4.0, fixing execution on Windows Server 2022 where .NET 3.5 / CLR 2.0 is unavailable
+## 2.14
+* Write `ikvmc.exe.config` alongside `ikvmc.exe` after IKVM extraction to redirect CLR activation to v4.0, fixing execution on OSes such as Windows Server where .NET 3.5 / CLR 2.0 is unavailable
 
 ## 2.12
 * gradle 9.0 support

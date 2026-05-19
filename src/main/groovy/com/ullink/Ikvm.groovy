@@ -122,6 +122,7 @@ abstract class Ikvm extends Exec {
         assert home, "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
         File ikvmExec = new File(home, IKVM_EXE)
         assert ikvmExec.exists(), "You must install Ikvm and set ikvm.home property or IKVM_HOME env variable"
+        writeIkvmcExeConfig(home)
         return ikvmExec
     }
 
@@ -149,23 +150,21 @@ abstract class Ikvm extends Exec {
                 }
                 project.ant.unzip(src: dlFile, dest: ret)
             }
-            if (new File(ret, IKVM_EXE).exists()) {
-                writeIkvmcExeConfig(ret)
+            if (new File(ret, IKVM_EXE).exists())
                 return ret
-            }
             def sub = ret.listFiles().find {
                 new File(it, IKVM_EXE).exists()
             }
             assert sub, "${IKVM_EXE} not found in downloaded archive"
-            writeIkvmcExeConfig(sub)
             return sub
         }
         return project.file(home)
     }
 
-    static void writeIkvmcExeConfig(File ikvmDir) {
+    void writeIkvmcExeConfig(File ikvmDir) {
         def configFile = new File(ikvmDir, IKVM_EXE + '.config')
         if (!configFile.exists()) {
+            project.logger.info "Writing ${configFile} to redirect ikvmc.exe CLR activation to v4.0"
             configFile.text = '''\
 <?xml version="1.0" encoding="utf-8"?>
 <configuration>
@@ -174,6 +173,8 @@ abstract class Ikvm extends Exec {
   </startup>
 </configuration>
 '''
+        } else {
+            project.logger.info "ikvmc.exe.config already exists at ${configFile}, skipping"
         }
     }
 
@@ -189,8 +190,8 @@ abstract class Ikvm extends Exec {
     @InputFiles
     def getReferences() {
         project.configurations.findByName(getCompileConfigurationName()).collect()
-    } 
-    
+    }
+
     @InputFiles
     def getKeyFileObj() {
         if (getKeyFile()) {
@@ -304,7 +305,7 @@ abstract class Ikvm extends Exec {
 
         return commandLineArgs
     }
-    
+
     @TaskAction
     @Override
     protected void exec() {

@@ -149,15 +149,32 @@ abstract class Ikvm extends Exec {
                 }
                 project.ant.unzip(src: dlFile, dest: ret)
             }
-            if (new File(ret, IKVM_EXE).exists())
+            if (new File(ret, IKVM_EXE).exists()) {
+                writeIkvmcExeConfig(ret)
                 return ret
+            }
             def sub = ret.listFiles().find {
                 new File(it, IKVM_EXE).exists()
             }
             assert sub, "${IKVM_EXE} not found in downloaded archive"
+            writeIkvmcExeConfig(sub)
             return sub
         }
         return project.file(home)
+    }
+
+    static void writeIkvmcExeConfig(File ikvmDir) {
+        def configFile = new File(ikvmDir, IKVM_EXE + '.config')
+        if (!configFile.exists()) {
+            configFile.text = '''\
+<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <startup useLegacyV2RuntimeActivationPolicy="true">
+    <supportedRuntime version="v4.0"/>
+  </startup>
+</configuration>
+'''
+        }
     }
 
     def ikvmcOptionalOnMono (){
